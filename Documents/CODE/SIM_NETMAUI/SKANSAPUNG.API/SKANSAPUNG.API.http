@@ -1,0 +1,6 @@
+@SKANSAPUNG.API_HostAddress = http://localhost:5203
+
+GET {{SKANSAPUNG.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

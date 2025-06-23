@@ -1,0 +1,6 @@
+<ResourceDictionary>
+    <converters:TimeSpanNotZeroConverter x:Key="TimeSpanNotZeroConverter" />
+    <converters:StringNotEmptyConverter x:Key="StringNotEmptyConverter" />
+    <converters:IsNullConverter x:Key="IsNullConverter" />
+    <converters:IsNotNullConverter x:Key="IsNotNullConverter" />
+</ResourceDictionary> 

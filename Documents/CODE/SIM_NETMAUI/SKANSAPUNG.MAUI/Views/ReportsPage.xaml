@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:SKANSAPUNG.MAUI.ViewModels"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             x:Class="SKANSAPUNG.MAUI.Views.ReportsPage"
+             Title="{Binding Title}"
+             x:DataType="viewmodels:ReportsViewModel">
+    <ContentPage.Behaviors>
+        <toolkit:EventToCommandBehavior EventName="Appearing" Command="{Binding LoadSummaryCommand}" />
+    </ContentPage.Behaviors>
+    
+    <ScrollView>
+        <VerticalStackLayout Spacing="10" Padding="15">
+            <Label Text="Ringkasan Sekolah" FontSize="Title" FontAttributes="Bold" />
+
+            <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" Gap="10" Margin="0,10">
+                <!-- Card Total Siswa -->
+                <Frame Grid.Row="0" Grid.Column="0" Style="{StaticResource CardView}">
+                    <VerticalStackLayout>
+                        <Label Text="Total Siswa" Style="{StaticResource CardTitle}" />
+                        <Label Text="{Binding Summary.TotalStudents}" Style="{StaticResource CardData}" />
+                    </VerticalStackLayout>
+                </Frame>
+
+                <!-- Card Total Guru -->
+                <Frame Grid.Row="0" Grid.Column="1" Style="{StaticResource CardView}">
+                    <VerticalStackLayout>
+                        <Label Text="Total Guru" Style="{StaticResource CardTitle}" />
+                        <Label Text="{Binding Summary.TotalTeachers}" Style="{StaticResource CardData}" />
+                    </VerticalStackLayout>
+                </Frame>
+
+                <!-- Card Total Kelas -->
+                <Frame Grid.Row="1" Grid.Column="0" Style="{StaticResource CardView}">
+                    <VerticalStackLayout>
+                        <Label Text="Total Kelas" Style="{StaticResource CardTitle}" />
+                        <Label Text="{Binding Summary.TotalClasses}" Style="{StaticResource CardData}" />
+                    </VerticalStackLayout>
+                </Frame>
+
+                <!-- Card Absensi Hari Ini -->
+                <Frame Grid.Row="1" Grid.Column="1" Style="{StaticResource CardView}">
+                    <VerticalStackLayout>
+                        <Label Text="Absensi Hari Ini" Style="{StaticResource CardTitle}" />
+                        <Label Text="{Binding Summary.AttendanceToday}" Style="{StaticResource CardData}" />
+                    </VerticalStackLayout>
+                </Frame>
+            </Grid>
+
+            <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" VerticalOptions="Center" HorizontalOptions="Center" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage> 

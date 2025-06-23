@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodel="clr-namespace:SKANSAPUNG.MAUI.ViewModels"
+             xmlns:model="clr-namespace:SKANSAPUNG.MAUI.Models"
+             x:Class="SKANSAPUNG.MAUI.Views.ExtracurricularPage"
+             Title="{Binding Title}"
+             x:DataType="viewmodel:ExtracurricularViewModel">
+    <Grid RowDefinitions="Auto, *"
+          Margin="10">
+        <ActivityIndicator IsVisible="{Binding IsBusy}" 
+                           IsRunning="{Binding IsBusy}" 
+                           HorizontalOptions="FillAndExpand" 
+                           VerticalOptions="CenterAndExpand" 
+                           Grid.RowSpan="2" />
+
+        <CollectionView ItemsSource="{Binding Extracurriculars}"
+                        SelectionMode="None"
+                        Grid.Row="1">
+            <CollectionView.EmptyView>
+                <ContentView>
+                    <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center">
+                        <Label Text="No extracurricular activities found."/>
+                    </VerticalStackLayout>
+                </ContentView>
+            </CollectionView.EmptyView>
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="model:Extracurricular">
+                    <Frame Padding="15" Margin="0,0,0,10" CornerRadius="10" BorderColor="{StaticResource Gray200}">
+                        <VerticalStackLayout Spacing="8">
+                            <Label Text="{Binding Nama}" FontSize="Large" FontAttributes="Bold" TextColor="{StaticResource Primary}" />
+                            <Label Text="{Binding Deskripsi}" FontSize="Small" />
+                            <Grid ColumnDefinitions="Auto, *" RowDefinitions="Auto, Auto, Auto" ColumnSpacing="10">
+                                <Label Grid.Row="0" Grid.Column="0" Text="Hari:" FontAttributes="Bold" />
+                                <Label Grid.Row="0" Grid.Column="1" Text="{Binding Hari}" />
+                                <Label Grid.Row="1" Grid.Column="0" Text="Waktu:" FontAttributes="Bold" />
+                                <Label Grid.Row="1" Grid.Column="1">
+                                    <Label.FormattedText>
+                                        <FormattedString>
+                                            <Span Text="{Binding JamMulai, StringFormat='{0:hh\\:mm}'}" />
+                                            <Span Text=" - " />
+                                            <Span Text="{Binding JamSelesai, StringFormat='{0:hh\\:mm}'}" />
+                                        </FormattedString>
+                                    </Label.FormattedText>
+                                </Label>
+                                <Label Grid.Row="2" Grid.Column="0" Text="Tempat:" FontAttributes="Bold" />
+                                <Label Grid.Row="2" Grid.Column="1" Text="{Binding Tempat}" />
+                            </Grid>
+                        </VerticalStackLayout>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </Grid>
+</ContentPage> 

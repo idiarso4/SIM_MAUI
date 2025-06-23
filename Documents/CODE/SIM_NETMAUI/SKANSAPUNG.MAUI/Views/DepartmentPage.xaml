@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodel="clr-namespace:SKANSAPUNG.MAUI.ViewModels"
+             xmlns:model="clr-namespace:SKANSAPUNG.MAUI.Models"
+             x:DataType="viewmodel:DepartmentViewModel"
+             x:Class="SKANSAPUNG.MAUI.Views.DepartmentPage"
+             Title="{Binding Title}">
+    <Grid RowDefinitions="*" RowSpacing="10" Padding="10">
+        <CollectionView ItemsSource="{Binding Departments}"
+                        SelectionMode="None">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="model:LocalDepartment">
+                    <Frame Padding="10" Margin="5" CornerRadius="10" BorderColor="LightGray">
+                        <StackLayout>
+                            <Label Text="{Binding Name}" FontSize="Medium" FontAttributes="Bold" />
+                            <Label Text="{Binding Kode}" FontSize="Small" />
+                        </StackLayout>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <ActivityIndicator IsVisible="{Binding IsBusy}" IsRunning="{Binding IsBusy}" HorizontalOptions="Center" VerticalOptions="Center" />
+    </Grid>
+</ContentPage>

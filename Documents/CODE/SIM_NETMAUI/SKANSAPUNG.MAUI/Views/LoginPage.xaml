@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="SKANSAPUNG.MAUI.Views.LoginPage"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:SKANSAPUNG.MAUI.ViewModels"
+             x:DataType="viewmodels:LoginViewModel"
+             Title="Login"
+             BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Black}}">
+
+    <ScrollView>
+        <Grid RowDefinitions="Auto,*,Auto" 
+              Padding="20"
+              RowSpacing="20">
+
+            <!-- Header -->
+            <VerticalStackLayout Grid.Row="0" 
+                                 Spacing="10"
+                                 HorizontalOptions="Center"
+                                 Margin="0,40,0,0">
+                
+                <Image Source="school_logo.png" 
+                       HeightRequest="80" 
+                       WidthRequest="80"
+                       HorizontalOptions="Center"/>
+                
+                <Label Text="SKANSAPUNG"
+                       FontSize="32"
+                       FontAttributes="Bold"
+                       HorizontalOptions="Center"
+                       TextColor="{StaticResource Primary}"/>
+                
+                <Label Text="Sistem Informasi Sekolah"
+                       FontSize="16"
+                       HorizontalOptions="Center"
+                       TextColor="{StaticResource Gray600}"/>
+            </VerticalStackLayout>
+
+            <!-- Login Form -->
+            <VerticalStackLayout Grid.Row="1" 
+                                 Spacing="20"
+                                 VerticalOptions="Center">
+
+                <!-- Email Field -->
+                <Frame BorderColor="{StaticResource Gray300}"
+                       BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}"
+                       CornerRadius="10"
+                       Padding="15">
+                    
+                    <Grid ColumnDefinitions="Auto,*">
+                        <Image Grid.Column="0" 
+                               Source="email_icon.png"
+                               HeightRequest="20"
+                               WidthRequest="20"
+                               VerticalOptions="Center"/>
+                        
+                        <Entry Grid.Column="1"
+                               Text="{Binding Email}"
+                               Placeholder="Email"
+                               Keyboard="Email"
+                               ReturnType="Next"
+                               Margin="10,0,0,0"/>
+                    </Grid>
+                </Frame>
+
+                <!-- Password Field -->
+                <Frame BorderColor="{StaticResource Gray300}"
+                       BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}"
+                       CornerRadius="10"
+                       Padding="15">
+                    
+                    <Grid ColumnDefinitions="Auto,*,Auto">
+                        <Image Grid.Column="0" 
+                               Source="lock_icon.png"
+                               HeightRequest="20"
+                               WidthRequest="20"
+                               VerticalOptions="Center"/>
+                        
+                        <Entry Grid.Column="1"
+                               Text="{Binding Password}"
+                               Placeholder="Password"
+                               IsPassword="{Binding IsPasswordVisible, Converter={StaticResource InverseBoolConverter}}"
+                               ReturnType="Done"
+                               Margin="10,0,0,0"/>
+                        
+                        <Button Grid.Column="2"
+                                Text="{Binding IsPasswordVisible, Converter={StaticResource BoolToEyeIconConverter}}"
+                                Command="{Binding TogglePasswordVisibilityCommand}"
+                                BackgroundColor="Transparent"
+                                TextColor="{StaticResource Gray600}"
+                                FontSize="16"
+                                Padding="0"/>
+                    </Grid>
+                </Frame>
+
+                <!-- Remember Me & Forgot Password -->
+                <Grid ColumnDefinitions="*,Auto">
+                    <HorizontalStackLayout Grid.Column="0" Spacing="5">
+                        <CheckBox IsChecked="{Binding RememberMe}"/>
+                        <Label Text="Remember Me"
+                               VerticalOptions="Center"
+                               TextColor="{StaticResource Gray600}"/>
+                    </HorizontalStackLayout>
+                    
+                    <Button Grid.Column="1"
+                            Text="Forgot Password?"
+                            Command="{Binding ForgotPasswordCommand}"
+                            BackgroundColor="Transparent"
+                            TextColor="{StaticResource Primary}"
+                            FontSize="14"/>
+                </Grid>
+
+                <!-- Login Button -->
+                <Button Text="Login"
+                        Command="{Binding LoginCommand}"
+                        IsEnabled="{Binding IsBusy, Converter={StaticResource InverseBoolConverter}}"
+                        BackgroundColor="{StaticResource Primary}"
+                        TextColor="{StaticResource White}"
+                        FontSize="16"
+                        FontAttributes="Bold"
+                        CornerRadius="10"
+                        HeightRequest="50"
+                        Margin="0,20,0,0"/>
+
+                <!-- Loading Indicator -->
+                <ActivityIndicator IsVisible="{Binding IsBusy}"
+                                   IsRunning="{Binding IsBusy}"
+                                   Color="{StaticResource Primary}"
+                                   HorizontalOptions="Center"/>
+
+            </VerticalStackLayout>
+
+            <!-- Footer -->
+            <VerticalStackLayout Grid.Row="2" 
+                                 Spacing="5"
+                                 HorizontalOptions="Center"
+                                 Margin="0,0,0,20">
+                
+                <Label Text="© 2025 SKANSAPUNG"
+                       FontSize="12"
+                       HorizontalOptions="Center"
+                       TextColor="{StaticResource Gray500}"/>
+                
+                <Label Text="All rights reserved"
+                       FontSize="12"
+                       HorizontalOptions="Center"
+                       TextColor="{StaticResource Gray500}"/>
+            </VerticalStackLayout>
+
+        </Grid>
+    </ScrollView>
+
+</ContentPage> 
