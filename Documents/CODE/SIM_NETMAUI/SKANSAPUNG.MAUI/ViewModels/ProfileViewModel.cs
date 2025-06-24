@@ -130,11 +130,15 @@ public partial class ProfileViewModel : BaseViewModel
     [RelayCommand]
     private async Task LogoutAsync()
     {
-        var confirmed = await ShowConfirmationAsync("Logout", "Are you sure you want to logout?");
+        var confirmed = await App.Current.MainPage.DisplayAlert("Logout", "Are you sure you want to logout?", "Yes", "No");
         if (confirmed)
         {
             await _authService.LogoutAsync();
-            await Shell.Current.GoToAsync("///Login");
+
+            // Notify AppShell to clear tabs
+            MessagingCenter.Send<object>(this, "UpdateTabs");
+
+            await Shell.Current.GoToAsync("//LoginPage");
         }
     }
 

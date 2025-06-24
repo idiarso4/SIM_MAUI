@@ -17,6 +17,7 @@ namespace SKANSAPUNG.MAUI.Services
         Task SaveDepartmentsAsync(IEnumerable<Department> departments);
         Task<List<ScheduleItem>> GetScheduleForClassAsync(long classRoomId);
         Task SaveScheduleAsync(IEnumerable<ScheduleItem> schedule);
+        Task ClearAndInsertAsync<T>(IEnumerable<T> items) where T : new();
 
         // Local Attendance
         Task<List<LocalAttendance>> GetAttendanceHistoryAsync();

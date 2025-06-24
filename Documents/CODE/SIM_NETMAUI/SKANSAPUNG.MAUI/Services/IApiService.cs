@@ -7,6 +7,8 @@ namespace SKANSAPUNG.MAUI.Services
         // Authentication
         Task<User> LoginAsync(string username, string password);
         Task<bool> LogoutAsync();
+    Task<IEnumerable<AttendanceRecord>> GetAttendanceDetailAsync(string studentId);
+    Task<IEnumerable<GradeRecord>> GetGradesDetailAsync(string studentId, string subjectName);
         Task<User> GetCurrentUserAsync();
         Task<bool> RegisterUserAsync(string username, string password, string role);
         Task<bool> ValidateTokenAsync();
@@ -24,8 +26,8 @@ namespace SKANSAPUNG.MAUI.Services
         
         // Reports
         Task<ReportSummaryDto> GetReportSummaryAsync();
-        Task<object> GetAttendanceReportAsync(long classroomId, DateTime? startDate = null, DateTime? endDate = null);
-        Task<object> GetGradesReportAsync(long classroomId, long? subjectId = null);
+        Task<List<StudentAttendanceRecordDto>> GetAttendanceReportAsync(long classroomId, DateTime? startDate = null, DateTime? endDate = null);
+        Task<List<StudentGradeRecordDto>> GetGradesReportAsync(long classroomId, long? subjectId = null);
         Task<object> GetStudentReportAsync(long studentId);
         Task<object> GetClassroomReportAsync(long classroomId);
         Task<object> GetDepartmentReportAsync(long departmentId);
@@ -79,6 +81,7 @@ namespace SKANSAPUNG.MAUI.Services
         Task<object> GetStudentGradeStatisticsAsync(long studentId);
         Task<object> GetClassroomGradeStatisticsAsync(long classroomId);
         Task<bool> SaveStudentScoreAsync(StudentScore score);
+        Task<bool> UpdateScoresAsync(List<StudentScoreUpdateDto> scores);
         Task<bool> CreateBulkGradesAsync(List<StudentScore> grades);
         Task<List<string>> SyncGradesAsync(List<StudentScoreDetailDto> grades);
         Task<List<StudentScore>> SearchGradesAsync(string query);

@@ -69,23 +69,27 @@
 
 ---
 
-## ❌ PEKERJAAN YANG BELUM SELESAI
+## PEKERJAAN YANG BELUM SELESAI
 
-### 🏗️ **Platform-Specific Implementations**
+### **Platform-Specific Implementations**
 - [ ] `Platforms/MacCatalyst/` files (jika diperlukan)
 
-### 🔐 **Security Features**
-- [ ] Secure storage implementation
-- [ ] Certificate pinning untuk API
-- [ ] Biometric authentication
-- [ ] Data encryption
+### 🔐 **Authentication & Authorization**
+- [x] Secure token storage (menggunakan SecureStorage)
+- [x] Login API call
+- [x] Logout API call
+- [x] Role-based access control (client-side)
+- [x] Certificate pinning untuk API (konfigurasi placeholder selesai)
+- [x] Biometric authentication
 
-### 📊 **Missing Pages & Features**
+### **Missing Pages & Features**
 - [ ] Mengisi data dan logika untuk halaman placeholder:
-  - [ ] ReportsPage
-  - [ ] GradesPage
-  - [ ] SchedulePage
-- [ ] Role-based navigation (menyembunyikan/menampilkan tab berdasarkan peran pengguna)
+  - [x] ReportsPage (Halaman Utama)
+  - [x] Detail Laporan Kehadiran
+  - [x] Detail Laporan Nilai
+  - [x] GradesPage
+  - [x] SchedulePage
+- [x] Role-based navigation (menyembunyikan/menampilkan tab berdasarkan peran pengguna)
 
 ### 🔧 **API Service & Backend**
 - [x] **Database Migration**: ✅ SELESAI - Semua model berhasil dimigrasikan

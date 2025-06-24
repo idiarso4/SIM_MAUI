@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:SKANSAPUNG.MAUI.ViewModels"
+             xmlns:models="clr-namespace:SKANSAPUNG.MAUI.Models"
+             x:Class="SKANSAPUNG.MAUI.Views.AttendanceDetailPage"
+             x:DataType="viewmodels:AttendanceDetailViewModel"
+             Title="Detail Laporan Absensi">
+    <Grid RowDefinitions="Auto, *">
+        <VerticalStackLayout Grid.Row="0" Padding="15" Spacing="10">
+            <Label Text="Detail Absensi Siswa" FontSize="24" FontAttributes="Bold" />
+            <Label Text="{Binding StudentName}" FontSize="18" />
+        </VerticalStackLayout>
+
+        <CollectionView Grid.Row="1" ItemsSource="{Binding AttendanceRecords}">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:AttendanceRecord">
+                    <Frame Padding="15" Margin="10,5" BorderColor="{StaticResource Gray200}" CornerRadius="10">
+                        <Grid ColumnDefinitions="*, Auto">
+                            <VerticalStackLayout Grid.Column="0">
+                                <Label Text="{Binding Date, StringFormat='{0:dd MMMM yyyy}'}" FontAttributes="Bold" />
+                                <Label Text="{Binding Description}" FontSize="12" TextColor="{StaticResource Gray500}" />
+                            </VerticalStackLayout>
+                            <Label Grid.Column="1" Text="{Binding Status}" VerticalOptions="Center" />
+                        </Grid>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <ActivityIndicator IsVisible="{Binding IsBusy}" IsRunning="{Binding IsBusy}" HorizontalOptions="Center" VerticalOptions="Center" Grid.RowSpan="2" />
+    </Grid>
+</ContentPage>

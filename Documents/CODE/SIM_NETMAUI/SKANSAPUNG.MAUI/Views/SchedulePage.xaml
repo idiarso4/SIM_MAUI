@@ -7,6 +7,12 @@
              Title="{Binding Title}"
              x:DataType="viewmodel:ScheduleViewModel">
 
+    <ContentPage.Behaviors>
+        <toolkit:EventToCommandBehavior
+            EventName="Appearing"
+            Command="{Binding InitializeCommand}" />
+    </ContentPage.Behaviors>
+
     <StackLayout Padding="16" Spacing="12">
         <Frame Style="{StaticResource PickerFrameStyle}">
             <Picker ItemsSource="{Binding ClassRooms}"

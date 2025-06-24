@@ -20,6 +20,8 @@
 	<string>1</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSFaceIDUsageDescription</key>
+	<string>This app uses Face ID to provide secure and convenient login.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>This app needs access to location when open to track attendance.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
@@ -49,5 +51,22 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSPinnedDomains</key>
+		<dict>
+			<!-- Ganti 'your.api.domain' dengan domain API Anda -->
+			<key>your.api.domain</key>
+			<dict>
+				<key>NSIncludesSubdomains</key>
+				<true/>
+				<key>NSPublicKeyHashes</key>
+				<array>
+					<!-- GANTI DENGAN HASH KUNCI PUBLIK SERTIFIKAT ANDA (BASE64 ENCODED SHA-256) -->
+					<string>GANTI_DENGAN_HASH_SERTIFIKAT_ANDA</string>
+				</array>
+			</dict>
+		</dict>
+	</dict>
 </dict>
-</plist> 
+</plist>

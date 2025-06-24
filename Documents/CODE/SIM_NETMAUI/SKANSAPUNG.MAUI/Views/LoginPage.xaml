@@ -121,6 +121,20 @@
                         HeightRequest="50"
                         Margin="0,20,0,0"/>
 
+                <!-- Biometric Login Button -->
+                <ImageButton Source="fingerprint.svg"
+                             Command="{Binding BiometricLoginCommand}"
+                             IsVisible="{Binding IsBiometricAvailable}"
+                             IsEnabled="{Binding IsBusy, Converter={StaticResource InverseBoolConverter}}"
+                             HeightRequest="50"
+                             WidthRequest="50"
+                             HorizontalOptions="Center"
+                             Margin="0,15,0,0">
+                    <ImageButton.Behaviors>
+                        <toolkit:IconTintColorBehavior TintColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray200}}" />
+                    </ImageButton.Behaviors>
+                </ImageButton>
+
                 <!-- Loading Indicator -->
                 <ActivityIndicator IsVisible="{Binding IsBusy}"
                                    IsRunning="{Binding IsBusy}"

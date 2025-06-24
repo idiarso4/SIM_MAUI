@@ -34,11 +34,19 @@ public static class MauiProgram
             });
 
         builder.Services.AddSingleton<IApiService, ApiService>();
-        builder.Services.AddSingleton<IAuthService, AuthService>();
+        builder.Services.AddSingleton<IAuthService>(provider =>
+            new AuthService(
+                Microsoft.Maui.Storage.SecureStorage.Default, // Menggunakan instance default
+                provider.GetRequiredService<IApiService>()
+            ));
         builder.Services.AddSingleton<IGeolocationService, GeolocationService>();
         builder.Services.AddSingleton<INotificationService, NotificationService>();
         builder.Services.AddSingleton<IDatabaseService, DatabaseService>();
         builder.Services.AddSingleton<IConnectivityService, ConnectivityService>();
+
+        // Register Fingerprint Plugin
+        builder.Services.AddSingleton(Plugin.Fingerprint.CrossFingerprint.Current);
+        builder.Services.AddSingleton<IBiometricService, BiometricService>();
 
         // Register ViewModels
         builder.Services.AddSingleton<ClassRoomViewModel>();
@@ -54,9 +62,17 @@ public static class MauiProgram
         builder.Services.AddSingleton<TeachersViewModel>();
         builder.Services.AddSingleton<SubjectsViewModel>();
         builder.Services.AddSingleton<ReportsViewModel>();
+        builder.Services.AddTransient<AttendanceDetailViewModel>();
+        builder.Services.AddTransient<AttendanceDetailPage>();
+        builder.Services.AddTransient<GradesDetailViewModel>();
+        builder.Services.AddTransient<GradesDetailPage>();
         builder.Services.AddSingleton<GradesViewModel>();
         builder.Services.AddSingleton<ScheduleViewModel>();
         builder.Services.AddSingleton<MyGradesViewModel>();
+
+        // Report Detail ViewModels
+        builder.Services.AddTransient<AttendanceReportViewModel>();
+        builder.Services.AddTransient<GradesReportViewModel>();
 
         // Register Views
         builder.Services.AddTransient<AttendancePage>();
@@ -75,8 +91,14 @@ public static class MauiProgram
         builder.Services.AddTransient<SchedulePage>();
         builder.Services.AddTransient<MyGradesPage>();
 
+        // Report Detail Pages
+        builder.Services.AddTransient<AttendanceReportPage>();
+        builder.Services.AddTransient<GradesReportPage>();
+
         builder.Services.AddTransient<NotificationsViewModel>();
         builder.Services.AddTransient<NotificationsPage>();
+
+        builder.Services.AddSingleton<AppShell>();
 
 #if DEBUG
         builder.Logging.AddDebug();

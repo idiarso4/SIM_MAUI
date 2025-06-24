@@ -12,85 +12,8 @@
         ContentTemplate="{DataTemplate views:LoginPage}"
         Route="LoginPage" />
 
-    <TabBar Route="MainTabs">
-        <Tab Title="Dashboard" Icon="dashboard.png">
-            <ShellContent
-                Title="Dashboard"
-                ContentTemplate="{DataTemplate views:DashboardPage}"
-                Route="DashboardPage" />
-        </Tab>
-        <Tab Title="Students" Icon="students.png">
-            <ShellContent
-                Title="Students"
-                ContentTemplate="{DataTemplate views:StudentsPage}"
-                Route="StudentsPage" />
-        </Tab>
-        <Tab Title="Teachers" Icon="teachers.svg">
-            <ShellContent
-                Title="Teachers"
-                ContentTemplate="{DataTemplate views:TeachersPage}"
-                Route="TeachersPage" />
-        </Tab>
-        <Tab Title="Subjects" Icon="subjects.svg">
-            <ShellContent
-                Title="Subjects"
-                ContentTemplate="{DataTemplate views:SubjectsPage}"
-                Route="SubjectsPage" />
-        </Tab>
-        <Tab Title="Departments" Icon="departments.svg">
-            <ShellContent
-                Title="Departments"
-                ContentTemplate="{DataTemplate views:DepartmentPage}"
-                Route="DepartmentPage" />
-        </Tab>
-        <Tab Title="Attendance" Icon="attendance.png">
-            <ShellContent
-                Title="Attendance"
-                ContentTemplate="{DataTemplate views:AttendancePage}"
-                Route="AttendancePage" />
-        </Tab>
-        <Tab Title="Profile" Icon="profile.png">
-            <ShellContent
-                Title="Profile"
-                ContentTemplate="{DataTemplate views:ProfilePage}"
-                Route="ProfilePage" />
-        </Tab>
-        <Tab Title="Notifications" Icon="notifications.svg">
-            <ShellContent
-                Title="Notifications"
-                ContentTemplate="{DataTemplate views:NotificationsPage}"
-                Route="NotificationsPage" />
-        </Tab>
-        <Tab Title="Classes" Icon="classes.svg">
-            <ShellContent
-                Title="Classes"
-                ContentTemplate="{DataTemplate views:ClassesPage}"
-                Route="ClassesPage" />
-        </Tab>
-        <Tab Title="Reports" Icon="reports.svg">
-            <ShellContent
-                Title="Reports"
-                ContentTemplate="{DataTemplate views:ReportsPage}"
-                Route="ReportsPage" />
-        </Tab>
-        <Tab Title="Grades" Icon="grades.svg">
-            <ShellContent
-                Title="Grades"
-                ContentTemplate="{DataTemplate views:GradesPage}"
-                Route="GradesPage" />
-        </Tab>
-        <Tab Title="Schedule" Icon="schedule.svg">
-            <ShellContent
-                Title="Schedule"
-                ContentTemplate="{DataTemplate views:SchedulePage}"
-                Route="SchedulePage" />
-        </Tab>
-        <Tab Title="My Grades" Icon="grades.svg">
-            <ShellContent
-                Title="My Grades"
-                ContentTemplate="{DataTemplate views:MyGradesPage}"
-                Route="MyGradesPage" />
-        </Tab>
+    <TabBar Route="MainTabs" x:Name="MainTabBar">
+
     </TabBar>
 
 </Shell> 

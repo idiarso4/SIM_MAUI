@@ -78,18 +78,52 @@ namespace SKANSAPUNG.MAUI.Services
         }
 
         // Authentication
-        public async Task<User> LoginAsync(string email, string password)
+        public async Task<User> LoginAsync(string username, string password)
         {
-            // This is handled by AuthService
-            throw new NotImplementedException();
+            try
+            {
+                var loginData = new { Username = username, Password = password };
+                var content = new StringContent(JsonSerializer.Serialize(loginData), Encoding.UTF8, "application/json");
+
+                // Memanggil endpoint secara langsung untuk menghindari pengiriman auth header saat login
+                var response = await _httpClient.PostAsync($"{_baseUrl}/api/auth/login", content);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return await response.Content.ReadFromJsonAsync<User>();
+                }
+
+                var errorContent = await response.Content.ReadAsStringAsync();
+                System.Diagnostics.Debug.WriteLine($"Login failed with status {response.StatusCode}: {errorContent}");
+                return null;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Exception during login: {ex.Message}");
+                return null;
+            }
         }
         
         public async Task<bool> LogoutAsync()
         {
-            // This is handled by AuthService
-            throw new NotImplementedException();
+            try
+            {
+                // Memanggil endpoint logout di server. Header otentikasi akan ditambahkan oleh PostAsync.
+                return await PostAsync<object>("/api/auth/logout", null);
+            }
+            catch (Exception ex)
+            {                
+                System.Diagnostics.Debug.WriteLine($"Exception during logout: {ex.Message}");
+                return false;
+            }
         }
         
+        public async Task<IEnumerable<StudentGradeRecordDto>> GetGradesReportAsync(long classRoomId)
+        {
+            var records = await GetAsync<IEnumerable<StudentGradeRecordDto>>($"/api/reports/grades/classroom/{classRoomId}");
+            return records ?? new List<StudentGradeRecordDto>();
+        }
+
         public Task<User> GetCurrentUserAsync() => GetAsync<User>("/user");
 
         public async Task<List<User>> GetUsersAsync(string userType)
@@ -215,6 +249,11 @@ namespace SKANSAPUNG.MAUI.Services
             return score.Id > 0
                 ? PutAsync($"/studentscores/{score.Id}", score)
                 : PostAsync("/studentscores", score);
+        }
+
+        public Task<bool> UpdateScoresAsync(List<StudentScoreUpdateDto> scores)
+        {
+            return PutAsync("/scores", scores);
         }
 
         // Extracurriculars
@@ -485,5 +524,24 @@ namespace SKANSAPUNG.MAUI.Services
         }
 
         public Task<object> GetSystemStatisticsAsync() => GetAsync<object>("/statistics/system");
+
+        public async Task<IEnumerable<AttendanceRecord>> GetAttendanceDetailAsync(string studentId)
+        {
+            if (string.IsNullOrEmpty(studentId))
+                return new List<AttendanceRecord>();
+
+            var records = await GetAsync<IEnumerable<AttendanceRecord>>($"/api/reports/attendance/detail/{studentId}");
+            return records ?? new List<AttendanceRecord>();
+        }
+
+        public async Task<IEnumerable<GradeRecord>> GetGradesDetailAsync(string studentId, string subjectName)
+        {
+            if (string.IsNullOrEmpty(studentId) || string.IsNullOrEmpty(subjectName))
+                return new List<GradeRecord>();
+
+            var encodedSubjectName = System.Net.WebUtility.UrlEncode(subjectName);
+            var records = await GetAsync<IEnumerable<GradeRecord>>($"/api/reports/grades/detail/{studentId}?subjectName={encodedSubjectName}");
+            return records ?? new List<GradeRecord>();
+        }
     }
 } 

@@ -41,23 +41,51 @@ namespace SKANSAPUNG.MAUI.ViewModels
             SelectedDay = "Senin";
         }
 
+        [RelayCommand]
         public async Task InitializeAsync()
         {
             if (IsBusy) return;
+            IsBusy = true;
 
             try
             {
-                IsBusy = true;
-                var classes = await _databaseService.GetClassRoomsAsync();
-                if (classes.Any())
+                var classes = await _apiService.GetClassRoomsAsync();
+                if (classes != null && classes.Any())
                 {
+                    await _databaseService.ClearAndInsertAsync(classes);
                     ClassRooms.Clear();
                     foreach (var c in classes)
                     {
                         ClassRooms.Add(c);
                     }
+                }
+                else
+                {
+                    var localClasses = await _databaseService.GetClassRoomsAsync();
+                    ClassRooms.Clear();
+                    foreach (var c in localClasses)
+                    {
+                        ClassRooms.Add(c);
+                    }
+                }
+
+                if (ClassRooms.Any())
+                {
                     SelectedClassRoom = ClassRooms.First();
-                    await LoadSchedule();
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error initializing schedule view: {ex.Message}");
+                var localClasses = await _databaseService.GetClassRoomsAsync();
+                ClassRooms.Clear();
+                foreach (var c in localClasses)
+                {
+                    ClassRooms.Add(c);
+                }
+                if (ClassRooms.Any())
+                {
+                    SelectedClassRoom = ClassRooms.First();
                 }
             }
             finally
@@ -74,29 +102,37 @@ namespace SKANSAPUNG.MAUI.ViewModels
             IsBusy = true;
             try
             {
-                // Load from local database first
-                var localSchedule = await _databaseService.GetScheduleForClassAsync(SelectedClassRoom.Id);
-                _fullSchedule = new List<ScheduleItem>(localSchedule);
-                FilterSchedule();
-
-                // Fetch from API if connected
+                List<ScheduleItem> schedule = null;
                 if (IsConnected)
                 {
-                    var apiSchedule = await _apiService.GetScheduleForClassAsync(SelectedClassRoom.Id);
-                    if (apiSchedule != null && apiSchedule.Any())
+                    try
                     {
-                        // Assign ClassRoomId to each item before saving
-                        var scheduleToSave = apiSchedule.Select(s => { s.ClassRoomId = SelectedClassRoom.Id; return s; }).ToList();
-                        await _databaseService.SaveScheduleAsync(scheduleToSave);
-                        _fullSchedule = new List<ScheduleItem>(scheduleToSave);
-                        FilterSchedule();
+                        var apiSchedule = await _apiService.GetScheduleForClassAsync(SelectedClassRoom.Id);
+                        if (apiSchedule != null && apiSchedule.Any())
+                        {
+                            var scheduleToSave = apiSchedule.Select(s => { s.ClassRoomId = SelectedClassRoom.Id; return s; }).ToList();
+                            await _databaseService.SaveScheduleAsync(scheduleToSave);
+                            schedule = scheduleToSave;
+                        }
+                    }
+                    catch (Exception apiEx)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"API Error fetching schedule: {apiEx.Message}");
                     }
                 }
+
+                if (schedule == null)
+                {
+                    schedule = await _databaseService.GetScheduleForClassAsync(SelectedClassRoom.Id);
+                }
+
+                _fullSchedule = new List<ScheduleItem>(schedule ?? new List<ScheduleItem>());
+                FilterSchedule();
             }
             catch (Exception ex)
             {
-                // Handle exceptions (e.g., log them)
-                Console.WriteLine($"Error loading schedule: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"Error loading schedule: {ex.Message}");
+                await Shell.Current.DisplayAlert("Error", "Gagal memuat jadwal.", "OK");
             }
             finally
             {

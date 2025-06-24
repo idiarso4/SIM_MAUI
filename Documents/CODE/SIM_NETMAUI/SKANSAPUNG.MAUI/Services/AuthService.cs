@@ -10,10 +10,12 @@ namespace SKANSAPUNG.MAUI.Services
         private const string AuthTokenKey = "AuthToken";
         private const string UserInfoKey = "UserInfo";
         private readonly ISecureStorage _secureStorage;
+        private readonly IApiService _apiService;
 
-        public AuthService(ISecureStorage secureStorage)
+        public AuthService(ISecureStorage secureStorage, IApiService apiService)
         {
             _secureStorage = secureStorage;
+            _apiService = apiService;
         }
 
         public async Task<string> GetTokenAsync()
@@ -59,7 +61,12 @@ namespace SKANSAPUNG.MAUI.Services
         {
             await _secureStorage.RemoveAsync(AuthTokenKey);
             await _secureStorage.RemoveAsync(UserInfoKey);
-            await Task.CompletedTask;
+        }
+
+        public async Task LogoutAsync()
+        {
+            await _apiService.LogoutAsync(); // Invalidate token on server
+            await ClearAuthAsync(); // Clear local data
         }
     }
 }

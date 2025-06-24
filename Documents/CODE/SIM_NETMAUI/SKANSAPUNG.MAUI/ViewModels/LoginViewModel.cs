@@ -12,6 +12,7 @@ public partial class LoginViewModel : BaseViewModel
     private readonly IAuthService _authService;
     private readonly IDatabaseService _databaseService;
     private readonly INotificationService _notificationService;
+    private readonly IBiometricService _biometricService;
 
     [ObservableProperty]
     private string _username;
@@ -19,24 +20,30 @@ public partial class LoginViewModel : BaseViewModel
     [ObservableProperty]
     private string _password;
 
+
+
     [ObservableProperty]
-    private bool _isLoggingIn;
+    private bool _isBiometricAvailable;
 
     public LoginViewModel(IApiService apiService, IAuthService authService, IDatabaseService databaseService, 
-        INotificationService notificationService, IConnectivityService connectivityService)
+        INotificationService notificationService, IConnectivityService connectivityService, IBiometricService biometricService)
         : base(connectivityService)
     {
         _apiService = apiService;
         _authService = authService;
         _databaseService = databaseService;
         _notificationService = notificationService;
+        _biometricService = biometricService;
         Title = "Login";
+
+        // Check for biometric availability on startup
+        Task.Run(async () => IsBiometricAvailable = await _biometricService.IsAvailableAsync() && !string.IsNullOrEmpty(await _authService.GetTokenAsync()));
     }
 
     [RelayCommand]
     private async Task LoginAsync()
     {
-        if (IsLoggingIn || string.IsNullOrWhiteSpace(Username) || string.IsNullOrWhiteSpace(Password))
+        if (IsBusy || string.IsNullOrWhiteSpace(Username) || string.IsNullOrWhiteSpace(Password))
         {
             await ShowAlertAsync("Error", "Please enter both username and password.");
             return;
@@ -44,7 +51,7 @@ public partial class LoginViewModel : BaseViewModel
 
         try
         {
-            IsLoggingIn = true;
+            IsBusy = true;
 
             if (!ConnectivityService.IsConnected())
             {
@@ -53,17 +60,22 @@ public partial class LoginViewModel : BaseViewModel
             }
 
             var user = await _apiService.LoginAsync(Username, Password);
-            if (user != null)
+            if (user != null && !string.IsNullOrEmpty(user.RememberToken))
             {
-                // Save user locally
+                // Save authentication state
+                await _authService.SaveTokenAsync(user.RememberToken);
+                await _authService.SaveUserAsync(user);
+
+                // The original code saved a LocalUser, let's keep that logic.
+                // NOTE: The User model does not contain Username or PhoneNumber. Using Email for Username.
                 await _databaseService.SaveUserAsync(new LocalUser
                 {
                     Id = user.Id,
-                    Username = user.Username,
+                    Username = user.Email, 
                     Name = user.Name,
                     Role = user.Role,
                     Email = user.Email,
-                    PhoneNumber = user.PhoneNumber
+                    PhoneNumber = ""
                 });
 
                 // Register for push notifications
@@ -80,8 +92,11 @@ public partial class LoginViewModel : BaseViewModel
                     Debug.WriteLine($"Error registering for push notifications: {ex.Message}");
                 }
 
-                // Navigate to dashboard
-                await Shell.Current.GoToAsync("///dashboard");
+                // Notify AppShell to update tabs
+                MessagingCenter.Send<object>(this, "UpdateTabs");
+
+                // Navigate to the main tabbed page
+                await Shell.Current.GoToAsync("//MainTabs");
             }
             else
             {
@@ -95,7 +110,48 @@ public partial class LoginViewModel : BaseViewModel
         }
         finally
         {
-            IsLoggingIn = false;
+            IsBusy = false;
+        }
+    }
+
+    [RelayCommand]
+    private async Task BiometricLoginAsync()
+    {
+        if (IsBusy || !IsBiometricAvailable)
+            return;
+
+        try
+        {
+            IsBusy = true;
+
+            var authenticated = await _biometricService.AuthenticateAsync("Login to SKANSAPUNG");
+            if (authenticated)
+            {
+                var tokenValid = await _apiService.ValidateTokenAsync();
+                if (tokenValid)
+                {
+                    MessagingCenter.Send<object>(this, "UpdateTabs");
+                    await Shell.Current.GoToAsync("//MainTabs");
+                }
+                else
+                {
+                    await ShowAlertAsync("Session Expired", "Your session has expired. Please log in again.");
+                    await _authService.LogoutAsync(); // Clear expired token
+                }
+            }
+            else
+            {
+                await ShowAlertAsync("Authentication Failed", "Could not verify your identity.");
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Biometric login error: {ex.Message}");
+            await ShowAlertAsync("Error", "An unexpected error occurred during biometric login.");
+        }
+        finally
+        {
+            IsBusy = false;
         }
     }
 

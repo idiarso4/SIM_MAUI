@@ -4,6 +4,7 @@ using SKANSAPUNG.MAUI.Models;
 using SKANSAPUNG.MAUI.Services;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using System.Collections.ObjectModel;
 
 namespace SKANSAPUNG.MAUI.ViewModels
 {
@@ -14,12 +15,36 @@ namespace SKANSAPUNG.MAUI.ViewModels
         [ObservableProperty]
         private ReportSummaryDto _summary;
 
+        public ObservableCollection<ReportType> AvailableReports { get; } = new();
+
         public ReportsViewModel(IConnectivityService connectivityService, IApiService apiService)
             : base(connectivityService)
         {
             Title = "Laporan";
             _apiService = apiService;
             Summary = new ReportSummaryDto();
+            LoadAvailableReports();
+        }
+
+        [RelayCommand]
+        private void LoadAvailableReports()
+        {
+            AvailableReports.Add(new ReportType { Title = "Laporan Kehadiran", Description = "Lihat rekapitulasi kehadiran siswa.", Icon = "attendance.png", TargetPageRoute = "AttendanceReportPage" });
+            AvailableReports.Add(new ReportType { Title = "Laporan Nilai", Description = "Lihat rekapitulasi nilai siswa per kelas.", Icon = "grades.svg", TargetPageRoute = "GradesReportPage" });
+            // Tambahkan jenis laporan lain di sini jika perlu
+        }
+
+        [RelayCommand]
+        private async Task SelectReportAsync(ReportType reportType)
+        {
+            if (reportType == null)
+                return;
+
+            // Navigasi ke halaman detail laporan yang sesuai
+            await Shell.Current.GoToAsync(reportType.TargetPageRoute, true, new Dictionary<string, object>
+            {
+                { "ReportTitle", reportType.Title }
+            });
         }
 
         [RelayCommand]

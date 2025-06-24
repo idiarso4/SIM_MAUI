@@ -7,8 +7,14 @@
              Title="{Binding Title}"
              x:DataType="viewmodel:GradesViewModel">
 
+    <ContentPage.Behaviors>
+        <toolkit:EventToCommandBehavior
+            EventName="Appearing"
+            Command="{Binding InitializeCommand}" />
+    </ContentPage.Behaviors>
+
     <StackLayout Padding="16">
-        <Grid ColumnDefinitions="*,*" ColumnSpacing="12" RowDefinitions="Auto, Auto, Auto, *">
+        <Grid ColumnDefinitions="*,*" ColumnSpacing="12" RowDefinitions="Auto, Auto, Auto, *, Auto">
             
             <Label Grid.Row="0" Grid.Column="0" Text="Pilih Kelas" VerticalOptions="Center"/>
             <Frame Grid.Row="1" Grid.Column="0" Style="{StaticResource PickerFrameStyle}">
@@ -51,15 +57,21 @@
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="model:StudentScoreDetailDto">
                         <Frame Padding="12" Margin="0,0,0,8" CornerRadius="8" BorderColor="{StaticResource Gray200}">
-                            <Grid ColumnDefinitions="*,Auto,Auto">
+                            <Grid ColumnDefinitions="*, 80">
                                 <Label Grid.Column="0" Text="{Binding StudentName}" VerticalOptions="Center"/>
-                                <Label Grid.Column="1" Text="{Binding Score, StringFormat='{0:N0}'}" FontAttributes="Bold" VerticalOptions="Center" IsVisible="{Binding Score, Converter={StaticResource IsNotNullConverter}}"/>
-                                <Label Grid.Column="2" Text="{Binding Status}" FontAttributes="Italic" TextColor="{StaticResource Gray500}" VerticalOptions="Center" IsVisible="{Binding Score, Converter={StaticResource IsNullConverter}}"/>
+                                <Entry Grid.Column="1" 
+                                       Text="{Binding Score}" 
+                                       Placeholder="--" 
+                                       Keyboard="Numeric" 
+                                       HorizontalTextAlignment="Center"
+                                       VerticalOptions="Center"/>
                             </Grid>
                         </Frame>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
+
+            <Button Grid.Row="4" Grid.ColumnSpan="2" Text="Simpan Nilai" Command="{Binding SaveScoresAsyncCommand}" IsEnabled="{Binding IsNotBusy}" Margin="0,12,0,0"/>
         </Grid>
     </StackLayout>
 

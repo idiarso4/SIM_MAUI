@@ -41,6 +41,17 @@ namespace SKANSAPUNG.MAUI.Services
         public Task<LocalStudent> GetStudentByUserIdAsync(long userId) => _database.Table<LocalStudent>().Where(s => s.UserId == userId.ToString()).FirstOrDefaultAsync();
         public Task<int> SaveStudentAsync(LocalStudent student) => student.Id != 0 ? _database.UpdateAsync(student) : _database.InsertAsync(student);
         public Task<int> DeleteStudentAsync(int id) => _database.DeleteAsync<LocalStudent>(id);
+
+        public async Task ClearAndInsertAsync<T>(IEnumerable<T> items) where T : new()
+        {
+            await Init();
+            await _database.RunInTransactionAsync(conn =>
+            {
+                conn.DeleteAll<T>();
+                conn.InsertAll(items);
+            });
+        }
+
         public Task<List<LocalStudent>> GetUnsyncedStudentsAsync() => _database.Table<LocalStudent>().Where(s => !s.IsSynced).ToListAsync();
         public async Task MarkStudentsAsSyncedAsync(IEnumerable<int> ids)
         {
